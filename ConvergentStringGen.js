@@ -1,5 +1,4 @@
 "use strict"
-
 var grammar = {
 	 
 	'expr' : [['term'], ['term', '-' ,'expr'],['term', '+' ,'expr']],
@@ -7,7 +6,6 @@ var grammar = {
 	'factor' : [['ID'],['NUM'], ['(', 'expr', ')']],	
 }
 var examples = {};
-
 //Data
 var markers = {};
 //Predicate to check if ith prod is marked or not!
@@ -20,12 +18,11 @@ function marked(start, i) {
 	    return false;
 	else return true;
 }
-
-
 function isTermExhausted (rule, prod, term){
 	return markers[JSON.stringify([rule,prod,term])]
 }
-function isProdExhausted(rule, prod) {	return markers[JSON.stringify([rule,prod])];
+function isProdExhausted(rule, prod) {
+	return markers[JSON.stringify([rule,prod])];
 }
 function isRuleExhausted(rule) {
 	return markers[rule]
@@ -35,7 +32,6 @@ function markTermExhausted(rule,prod,term) {
 }
 function markProdExhausted(rule,prod){
 	markers[JSON.stringify([rule,prod])] = true;
-	markers['hey']="yo"
 	for(var i = 0; i < grammar[rule].length; i++) {
 		if(!isProdExhausted(rule,i)) return;
 	}
@@ -44,13 +40,11 @@ function markProdExhausted(rule,prod){
 function markRuleExhausted(rule) {
 	markers[rule] = true;
 }
-
 // To Mark a prod!
 function mark(start,i) {
 	if(markers[start] === undefined) markers[start] = [];
 	markers[start][i] = true;
 }
-
 function findUnExhaustedProduction(start) {
 	// return a production for start that is unseen, or undefined if covered.
 	for(var i = 0; i < grammar[start].length; i++) {
@@ -61,18 +55,14 @@ function findUnExhaustedProduction(start) {
 	
 	return undefined;
 }
-
 function gen(start,nonterms){
 	if(isRuleExhausted(start))
 		return examples[start];
 	var prod = findUnExhaustedProduction(start);
-
   // record presence of start nonterminal in the path.
   nonterms[start]=true;
 	var out="";
-
-  if(prod !== undefined) {
-
+	if(prod !== undefined) {
 		var allExhausted = true;
 		for(var i = 0; i < grammar[start][prod].length; i++) {
 			var s = grammar[start][prod][i];
@@ -100,11 +90,9 @@ function gen(start,nonterms){
   } else {
 		out = examples[start];
   }
-
   delete nonterms[start];
   return out;
 }
-
 var start='expr';
 while(!isRuleExhausted(start))
   console.log('result = ' + gen(start,{}))
